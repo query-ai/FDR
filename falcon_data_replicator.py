@@ -103,21 +103,22 @@ def splitall(path):
 
 
 def get_query_path(old_key):
-    now = pendulum.now()
+    now = pendulum.now('UTC') 
     yr = now.format('Y')
     mo = now.format('MM')
     date = now.format('DD')
     hr = now.format('HH')
-    file_id = shortuuid.uuid()
+    file_id = shortuuid.uuid()[:6]  # don't need 22 characters
     key_path = splitall(old_key)
     cs_id = key_path[0]
+    date_str = f"year={yr}/month={mo}/day={date}/{hr}_{file_id}.jsonl.gz"
 
     if key_path[1] == 'data':
-        pathandname = f"{cs_id}/data/{yr}/{mo}/{date}/{hr}/{file_id}.jsonl.gz"
+        pathandname = f"{cs_id}/data/{date_str}"
     elif key_path[1] == 'fdrv2':
-        pathandname = f"{cs_id}/fdrv2/{key_path[2]}/{yr}/{mo}/{date}/{hr}/{file_id}.jsonl.gz"
+        pathandname = f"{cs_id}/fdrv2/{key_path[2]}/{date_str}"
     else:
-        pathandname = f"{cs_id}/cs_other/{yr}/{mo}/{date}/{hr}/{file_id}.jsonl.gz"
+        pathandname = f"{cs_id}/cs_other/{date_str}"
 
     return (pathandname)
 
